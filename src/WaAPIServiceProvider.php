@@ -1,3 +1,30 @@
+// <?php
+
+// namespace WaAPI\WaAPI;
+
+// use Spatie\LaravelPackageTools\Package;
+// use Spatie\LaravelPackageTools\PackageServiceProvider;
+
+// class WaAPIServiceProvider extends PackageServiceProvider
+// {
+//     public function configurePackage(Package $package): void
+//     {
+//         /*
+//          * This class is a Package Service Provider
+//          *
+//          * More info: https://github.com/spatie/laravel-package-tools
+//          */
+//         $package
+//             ->name('laravel-waapi')
+//           //  ->hasRoute('api')
+//             ->hasConfigFile('waapi');
+//     }
+//     public function boot()
+// {
+//     $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+// }
+
+// }
 <?php
 
 namespace WaAPI\WaAPI;
@@ -9,19 +36,19 @@ class WaAPIServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('laravel-waapi')
-          //  ->hasRoute('api')
             ->hasConfigFile('waapi');
+            // DO NOT auto-load routes here (causes Composer LARAVEL_START conflict)
     }
-    public function boot()
-{
-    $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-}
 
+    public function boot()
+    {
+        parent::boot();
+
+        // Only load routes when Laravel is actually running — NOT during Composer install
+        if (! $this->app->runningInConsole()) {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        }
+    }
 }
